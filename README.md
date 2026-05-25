@@ -30,11 +30,6 @@ AI 喵管家是一个专为上班族设计的智能猫咪陪伴系统，通过 A
 
 **核心文件**: `MeowMateAI/laser_interaction.py`
 
-### 4️⃣ 附加功能：五子棋小游戏
-为猫咪主人提供的休闲小游戏。
-
-**核心文件**: `MeowMateAI/create_gomoku.py`
-
 ## 🛠️ AI 技术栈
 
 | 功能 | AI 模型 | 说明 |
@@ -83,9 +78,6 @@ python MeowMateAI/feed_guide.py
 
 # 行为异常检测
 python MeowMateAI/laser_interaction.py
-
-# 生成五子棋游戏
-python MeowMateAI/create_gomoku.py
 ```
 
 ## 📁 项目结构
@@ -98,13 +90,10 @@ csm/
 ├── requirements.txt          # 项目依赖列表
 ├── .env.example              # 环境变量示例模板
 ├── .gitignore               # Git 忽略文件配置
-├── MeowMateAI/              # 核心 AI 功能模块
-│   ├── action_recognition.py # AI 智能逗猫互动（行为识别）
-│   ├── feed_guide.py        # AI 智能精准投喂（定时投喂）
-│   ├── laser_interaction.py # AI 行为异常预警（激光互动）
-│   └── create_gomoku.py     # 五子棋游戏生成器
-└── docs/                    # 文档目录
-    └── AI 喵管家（AI Meow Butler）.md  # 详细项目文档
+└── MeowMateAI/              # 核心 AI 功能模块
+    ├── action_recognition.py # AI 智能逗猫互动（行为识别）
+    ├── feed_guide.py        # AI 智能精准投喂（定时投喂）
+    └── laser_interaction.py # AI 行为异常预警（激光互动）
 ```
 
 ## 📝 使用示例

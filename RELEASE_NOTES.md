@@ -22,11 +22,6 @@
 - 规则阈值双重校验
 - 支持抓挠过多、进食不足等异常检测
 
-#### 4. 五子棋小游戏 (`create_gomoku.py`)
-- 本地双人对战
-- 支持悔棋和重新开始
-- 美观的棋盘界面
-
 ### 📦 项目文件
 ```
 csm/
@@ -36,12 +31,10 @@ csm/
 ├── requirements.txt          # 依赖列表
 ├── .env.example              # 环境变量模板
 ├── .gitignore               # Git 忽略配置
-├── MeowMateAI/
-│   ├── action_recognition.py
-│   ├── feed_guide.py
-│   ├── laser_interaction.py
-│   └── create_gomoku.py
-└── RELEASE_NOTES.md          # 本文件
+└── MeowMateAI/
+    ├── action_recognition.py
+    ├── feed_guide.py
+    └── laser_interaction.py
 ```
 
 ### 🔒 安全说明
