@@ -40,6 +40,10 @@ AI 喵管家是一个专为上班族设计的智能猫咪陪伴系统，通过 A
 - `storage_module.py` - 证据素材存储管理
 - `main.py` - 主程序入口
 
+**测试脚本**: `test_behavior_analysis.py` - 行为分析模块单元测试（5 个测试用例）
+
+**日志输出**: `logs/behavior_log.csv` - CSV 格式行为日志（时间戳、行为类型、警报级别、持续时间、描述）
+
 ## 🛠️ AI 技术栈
 
 | 功能 | AI 模型 | 说明 |

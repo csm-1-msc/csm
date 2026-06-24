@@ -14,6 +14,8 @@ Behavior Analysis Module
 
 import cv2
 import logging
+import os
+import csv
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
@@ -21,6 +23,10 @@ from datetime import datetime
 import time
 
 from .ai_inference_module import Detection
+
+# 日志文件路径
+LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+BEHAVIOR_LOG_FILE = os.path.join(LOG_DIR, 'behavior_log.csv')
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +139,55 @@ class BehaviorAnalysisModule:
         self.current_alert_level = AlertLevel.NONE
         self.last_alert_time: Optional[float] = None
         
+        # 防抖状态追踪（用于 2 秒时间窗口防抖）
+        self.debounce_states: Dict[str, Dict] = {}
+        self.debounce_window = 2.0  # 2 秒防抖窗口
+        
+        # 确保日志目录存在
+        try:
+            os.makedirs(LOG_DIR, exist_ok=True)
+            # 初始化 CSV 日志文件（如果不存在）
+            self._init_csv_log()
+        except Exception as e:
+            logger.warning(f"初始化日志目录失败：{e}")
+        
         logger.info("BehaviorAnalysisModule 初始化完成")
+    
+    def _init_csv_log(self):
+        """初始化 CSV 日志文件"""
+        if not os.path.exists(BEHAVIOR_LOG_FILE):
+            with open(BEHAVIOR_LOG_FILE, 'w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    'timestamp',
+                    'behavior_type',
+                    'alert_level',
+                    'furniture_type',
+                    'duration_seconds',
+                    'description'
+                ])
+            logger.info(f"CSV 日志文件已创建：{BEHAVIOR_LOG_FILE}")
+    
+    def log_behavior(self, event: BehaviorEvent):
+        """
+        记录行为事件到 CSV 日志文件
+        
+        Args:
+            event: 行为事件对象
+        """
+        try:
+            with open(BEHAVIOR_LOG_FILE, 'a', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    event.timestamp.isoformat(),
+                    event.behavior_type.value,
+                    event.alert_level.value,
+                    event.furniture_detection.label if event.furniture_detection else None,
+                    f"{event.duration_seconds:.2f}",
+                    event.description
+                ])
+        except Exception as e:
+            logger.error(f"记录行为日志失败：{e}")
     
     def analyze(
         self, 
@@ -180,6 +234,10 @@ class BehaviorAnalysisModule:
         
         # 记录到历史
         self.event_history.extend(events)
+        
+        # 记录到 CSV 日志文件
+        for event in events:
+            self.log_behavior(event)
         
         # 限制历史记录大小
         if len(self.event_history) > 1000:
