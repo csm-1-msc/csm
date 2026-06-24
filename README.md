@@ -30,6 +30,16 @@ AI 喵管家是一个专为上班族设计的智能猫咪陪伴系统，通过 A
 
 **核心文件**: `MeowMateAI/laser_interaction.py`
 
+### 4️⃣ 📹 Cat Monitor 实时监控（NEW!）
+基于 **YOLOv8 目标检测** + **行为分析引擎**，实时监测猫咪与家具的交互行为，自动识别破坏行为并保存证据。
+
+**核心模块**: `cat_monitor/`
+- `camera_module.py` - 摄像头视频流读取（带重试机制和占用检测）
+- `ai_inference_module.py` - YOLOv8 AI 推理
+- `behavior_analysis_module.py` - 行为分析与警报判定
+- `storage_module.py` - 证据素材存储管理
+- `main.py` - 主程序入口
+
 ## 🛠️ AI 技术栈
 
 | 功能 | AI 模型 | 说明 |
@@ -46,7 +56,47 @@ AI 喵管家是一个专为上班族设计的智能猫咪陪伴系统，通过 A
 - Python 3.8+
 - Windows / macOS / Linux
 
-### 安装步骤
+### Windows 用户一键安装（推荐）
+
+> 💡 Windows 用户可使用 PowerShell 脚本一键安装，最简单！
+
+1. **克隆仓库**
+```powershell
+git clone https://github.com/csm-1-msc/csm.git
+cd csm
+```
+
+2. **运行一键安装脚本**
+```powershell
+# 允许执行脚本（首次需要）
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# 运行安装脚本（按提示确认）
+.\install_dependencies.ps1
+
+# 或跳过确认直接安装
+.\install_dependencies.ps1 -SkipConfirm
+```
+
+  3. **启动程序**
+  ```powershell
+  # Run in foreground (with display window)
+  .\start_cat_monitor.ps1
+
+  # Run in background (no display, for servers)
+  .\start_cat_monitor.ps1 -NoDisplay
+
+  # Show help information
+  .\start_cat_monitor.ps1 -Help
+
+  # Use camera device 1
+  .\start_cat_monitor.ps1 -Camera 1
+
+  # Set confidence threshold to 0.7
+  .\start_cat_monitor.ps1 -Confidence 0.7
+  ```
+
+### 手动安装步骤（所有平台）
 
 1. **克隆仓库**
 ```bash
@@ -64,8 +114,24 @@ source venv/bin/activate
 ```
 
 3. **安装依赖**
+
+> 💡 中国用户建议使用清华镜像源加速下载：
+
 ```bash
-pip install opencv-python numpy scikit-learn pandas statsmodels
+# 步骤 1: 升级 pip
+python -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 步骤 2: 安装基础库
+pip install opencv-python numpy colorama -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 步骤 3: 安装数据分析库
+pip install scikit-learn pandas statsmodels -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 步骤 4: 安装 PyTorch CPU 版
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# 步骤 5: 安装 ultralytics (YOLOv8)
+pip install ultralytics -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 4. **运行示例**
@@ -90,10 +156,17 @@ csm/
 ├── requirements.txt          # 项目依赖列表
 ├── .env.example              # 环境变量示例模板
 ├── .gitignore               # Git 忽略文件配置
-└── MeowMateAI/              # 核心 AI 功能模块
-    ├── action_recognition.py # AI 智能逗猫互动（行为识别）
-    ├── feed_guide.py        # AI 智能精准投喂（定时投喂）
-    └── laser_interaction.py # AI 行为异常预警（激光互动）
+├── MeowMateAI/              # 核心 AI 功能模块
+│   ├── action_recognition.py # AI 智能逗猫互动（行为识别）
+│   ├── feed_guide.py        # AI 智能精准投喂（定时投喂）
+│   └── laser_interaction.py # AI 行为异常预警（激光互动）
+└── cat_monitor/             # 📹 Cat Monitor 实时监控模块
+    ├── __init__.py          # 包初始化
+    ├── main.py              # 主程序入口
+    ├── camera_module.py     # 摄像头视频流读取
+    ├── ai_inference_module.py  # YOLOv8 AI 推理
+    ├── behavior_analysis_module.py  # 行为分析与警报判定
+    └── storage_module.py    # 证据素材存储管理
 ```
 
 ## 📝 使用示例
@@ -133,6 +206,56 @@ from MeowMateAI.laser_interaction import ai_detect_abnormal
 result = ai_detect_abnormal([5, 90])  # [抓挠次数，进食量]
 print(result)
 ```
+
+### 📹 Cat Monitor 实时监控
+
+```bash
+# 使用默认摄像头启动监控
+python -m cat_monitor.main
+
+# 使用指定摄像头（设备索引 1）
+python -m cat_monitor.main -c 1
+
+# 使用 RTSP 网络摄像头
+python -m cat_monitor.main -c rtsp://192.168.1.100:554/stream
+
+# 无显示模式（服务器/后台运行）
+python -m cat_monitor.main --no-display
+
+# 设置置信度阈值为 0.7
+python -m cat_monitor.main --confidence 0.7
+
+# 指定模型和存储路径
+python -m cat_monitor.main -m models/my_model.pt -s /path/to/storage
+
+# 设置摄像头重试次数和间隔（解决占用问题）
+python -m cat_monitor.main --retries 5 --retry-delay 2.0
+```
+
+**快捷键**:
+- `Q` - 退出程序
+- `S` - 手动保存当前帧截图
+
+**命令行参数**:
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `-c, --camera` | 摄像头源（设备索引或 RTSP 地址） | `0` |
+| `-m, --model` | YOLO 模型路径 | `models/cat_furniture_detector.pt` |
+| `-s, --storage` | 存储根目录 | `./storage` |
+| `--confidence` | 检测置信度阈值 | `0.5` |
+| `--no-display` | 禁用显示窗口（服务器模式） | `false` |
+| `--retries` | 摄像头打开失败时的最大重试次数 | `3` |
+| `--retry-delay` | 重试间隔秒数 | `1.0` |
+
+**常见问题**:
+- **摄像头被占用**: 关闭其他可能使用摄像头的程序（如 Zoom、Teams、微信等），或使用 `--retries` 参数增加重试次数
+- **无法打开摄像头**: 检查摄像头设备索引是否正确，使用 `list_available_cameras()` 方法查看可用摄像头
+- **无显示窗口**: 服务器环境请使用 `--no-display` 参数
+
+**输出说明**:
+- 截图保存在 `storage/screenshots/` 目录
+- 视频保存在 `storage/videos/` 目录
+- 按日期自动分类存储
 
 ## 🔒 安全说明
 

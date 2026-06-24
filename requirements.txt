@@ -1,10 +1,56 @@
-# AI 喵管家项目依赖
-# 核心 AI 库
+# AI 喵管家项目依赖 - Windows 优化版
+# Cat Monitor Project Dependencies - Windows Optimized
+# 
+# ============================================================================
+# 安装说明（Windows PowerShell）：
+# ============================================================================
+# 
+# 1. 升级 pip（重要！避免下载超时问题）：
+#    python -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 
+# 2. 安装基础轻量库（opencv、numpy 等）：
+#    pip install opencv-python numpy colorama -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 
+# 3. 安装数据分析库（scikit-learn、pandas 等）：
+#    pip install scikit-learn pandas statsmodels -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 
+# 4. 单独安装 PyTorch CPU 版（避免 GPU 版超大下载）：
+#    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# 
+# 5. 最后安装 ultralytics（YOLOv8）：
+#    pip install ultralytics -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# 核心 AI 库 / Core AI Libraries
+# ----------------------------------------------------------------------------
 opencv-python>=4.8.0
 numpy>=1.24.0
+
+# ----------------------------------------------------------------------------
+# 日志美化 / Logging Enhancement
+# ----------------------------------------------------------------------------
+colorama>=0.4.6
+
+# ----------------------------------------------------------------------------
+# 数据处理库 / Data Processing
+# 注：这些库依赖 numpy，建议在基础库之后安装
+# ----------------------------------------------------------------------------
 scikit-learn>=1.3.0
 pandas>=2.0.0
 statsmodels>=0.14.0
 
-# 可选依赖（如需 YOLOv8 功能）
-# ultralytics>=8.0.0
+# ----------------------------------------------------------------------------
+# 目标检测 / Object Detection (YOLOv8)
+# 注：ultralytics 依赖 torch，建议最后安装
+# ----------------------------------------------------------------------------
+ultralytics>=8.0.0
+
+# ----------------------------------------------------------------------------
+# 可选：视频编码支持（用于 MP4 录制）
+# 注意：需要系统安装 ffmpeg
+# opencv-python 默认包含视频编码支持
+# 如需更多格式支持，可安装：
+# ffmpeg-python>=0.2.0
+# ----------------------------------------------------------------------------
